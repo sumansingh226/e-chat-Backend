@@ -2,9 +2,9 @@
   "name": "e-chat-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "src/app.ts",
   "scripts": {
-    "start": "nodemon --exec ts-node app.ts",
+    "start": "nodemon ./src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
