@@ -8,24 +8,13 @@ const app = express();
 const server = http.createServer(app);
 const io = new SocketServer(server);
 
-// GraphQL schema
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`);
+
 
 // Root resolver
 const root = {
     hello: () => 'Hello, world!'
 };
 
-// GraphQL endpoint
-app.use('/graphql', graphqlHTTP({
-    schema: schema,
-    rootValue: root,
-    graphiql: true
-}));
 
 // Socket.io connection
 io.on('connection', (socket) => {
