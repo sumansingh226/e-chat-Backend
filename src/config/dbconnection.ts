@@ -3,7 +3,7 @@ import { MongoClient, Db } from 'mongodb';
 let db: Db;
 
 export async function connectDatabase(uri: string, dbName: string): Promise<void> {
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const client = new MongoClient(uri);
 
     try {
         await client.connect();
