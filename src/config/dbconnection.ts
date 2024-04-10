@@ -1,25 +1,43 @@
 import { MongoClient, Db } from 'mongodb';
 
-let db: Db;
+class Database {
+    private static instance: Database;
+    private db: Db | null = null;
 
-export async function connectDatabase(uri: string, dbName: string): Promise<void> {
-    const client = new MongoClient(uri);
+    private constructor() { }
 
-    try {
-        await client.connect();
-        console.log('Connected to MongoDB');
+    static getInstance(): Database {
+        if (!Database.instance) {
+            Database.instance = new Database();
+        }
+        return Database.instance;
+    }
 
-        db = client.db(dbName);
-    } catch (error) {
-        console.error('Failed to connect to MongoDB:', error);
-        process.exit(1);
+    async connect(uri: string, dbName: string): Promise<void> {
+        if (this.db) {
+            return;
+        }
+
+        const client = new MongoClient(uri);
+
+        try {
+            await client.connect();
+            console.log('Connected to MongoDB');
+
+            this.db = client.db(dbName);
+        } catch (error) {
+            console.error('Failed to connect to MongoDB:', error);
+            process.exit(1);
+        }
+    }
+
+    getDb(): Db {
+        if (!this.db) {
+            throw new Error('Database not connected');
+        }
+
+        return this.db;
     }
 }
 
-export function getDb(): Db {
-    if (!db) {
-        throw new Error('Database not connected');
-    }
-
-    return db;
-}
+export default Database;
