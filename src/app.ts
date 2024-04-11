@@ -4,6 +4,8 @@ import Database from './config/dbconnection';
 
 const app = express();
 
+app.use(express.json())
+
 const uri = 'mongodb://localhost:27017';
 const dbName = 'e-chat';
 
