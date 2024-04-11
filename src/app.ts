@@ -2,10 +2,12 @@ import express, { Request, Response } from 'express';
 import http from 'http';
 import Database from './config/dbconnection';
 import dotenv from 'dotenv';
+import authRoutes from "./Apis/Routes/Auth/AuthRoutes"
 
 dotenv.config();
 
 const app = express();
+app.use('/auth', authRoutes);
 
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.DB_NAME;
