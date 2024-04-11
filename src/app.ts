@@ -1,23 +1,24 @@
 import express, { Request, Response } from 'express';
 import http from 'http';
 import Database from './config/dbconnection';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
-app.use(express.json())
-
-const uri = 'mongodb://localhost:27017';
-const dbName = 'e-chat';
+const uri = process.env.MONGODB_URI;
+const dbName = process.env.DB_NAME;
 
 async function initialize() {
     const database = Database.getInstance();
-    await database.connect(uri, dbName);
+    await database.connect(uri!, dbName!);
 }
 
 initialize();
 
 // Express server
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello, World!');
