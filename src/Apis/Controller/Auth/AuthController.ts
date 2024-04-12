@@ -36,7 +36,7 @@ export const signIn = async (req: Request, res: Response) => {
     }
 
     try {
-        let user: UserDocument | null = null;
+        let user: any | null = null;
         if (username) {
             user = await User.findOne({ username });
         } else if (email) {
