@@ -63,8 +63,8 @@ export const signIn = async (req: Request, res: Response) => {
                 email: user.email,
                 mobile: user.mobile,
             },
-            'secret', // Replace 'secret' with your secret key
-            { expiresIn: '1h' } // Token expires in 1 hour
+            'secret',
+            { expiresIn: '12h' }
         );
 
         // Sign-in successful, send token in response
