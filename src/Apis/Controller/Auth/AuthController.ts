@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 import User from "../../Model/Auth/User";
 
-// Joi schema for validating the request body
 const signInSchema = Joi.object({
     username: Joi.string().allow(null, "").optional(),
     email: Joi.string().email().allow(null, "").optional(),
