@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Joi from "joi";
 import bcrypt from "bcrypt";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 import User from "../../Model/Auth/User";
 
 const signInSchema = Joi.object({
@@ -14,7 +14,6 @@ const signInSchema = Joi.object({
     password: Joi.string().required(),
 });
 
-
 export const signIn = async (req: Request, res: Response) => {
     const { error } = signInSchema.validate(req.body);
 
@@ -25,13 +24,17 @@ export const signIn = async (req: Request, res: Response) => {
     const { username, email, mobile, password } = req.body;
 
     if (!(username || email || mobile)) {
-        return res.status(400).json({ message: 'Username, email, or mobile is required' });
+        return res
+            .status(400)
+            .json({ message: "Username, email, or mobile is required" });
     }
 
     // Check if at least one of the three options is provided
     const optionsCount = [username, email, mobile].filter(Boolean).length;
     if (optionsCount !== 1) {
-        return res.status(400).json({ message: 'Provide only one of username, email, or mobile' });
+        return res
+            .status(400)
+            .json({ message: "Provide only one of username, email, or mobile" });
     }
 
     try {
@@ -45,13 +48,13 @@ export const signIn = async (req: Request, res: Response) => {
         }
 
         if (!user) {
-            return res.status(401).json({ message: 'User not found' });
+            return res.status(401).json({ message: "User not found" });
         }
 
         // Check if the password matches
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
-            return res.status(401).json({ message: 'Invalid password' });
+            return res.status(401).json({ message: "Invalid password" });
         }
 
         // Generate JWT token with user data
@@ -62,22 +65,89 @@ export const signIn = async (req: Request, res: Response) => {
                 email: user.email,
                 mobile: user.mobile,
             },
-            'secret',
-            { expiresIn: '12h' }
+            "secret",
+            { expiresIn: "12h" }
         );
 
         // Sign-in successful, send token in response
-        res.status(200).json({ message: 'Sign-in successful', token });
+        res.status(200).json({ message: "Sign-in successful", token });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: "Internal server error" });
     }
 };
 
-export const signUp = (req: Request, res: Response) => {
-    res.send("Sign-up route");
-};
+const signUpSchema = Joi.object({
+    username: Joi.string().required(),
+    email: Joi.string().email().required(),
+    mobile: Joi.string()
+        .pattern(/^\d{10}$/)
+        .required(),
+    password: Joi.string().required(),
+    name: Joi.string().required(),
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    age: Joi.number().required(),
+    gender: Joi.string().valid("male", "female", "other").required(),
+    address: Joi.object({
+        street: Joi.string().required(),
+        city: Joi.string().required(),
+        state: Joi.string().required(),
+        country: Joi.string().required(),
+        zip: Joi.string().required(),
+    }).required(),
+});
 
+export const signUp = async (req: Request, res: Response) => {
+    const { error } = signUpSchema.validate(req.body);
+
+    if (error) {
+        return res.status(400).json({ message: error.details[0].message });
+    }
+
+    const {
+        username,
+        email,
+        mobile,
+        password,
+        name,
+        firstName,
+        lastName,
+        age,
+        gender,
+        address,
+    } = req.body;
+
+    try {
+        const existingUser = await User.findOne({
+            $or: [{ username }, { email }, { mobile }],
+        });
+        if (existingUser) {
+            return res.status(409).json({ message: "User already exists" });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = new User({
+            username,
+            email,
+            mobile,
+            password: hashedPassword,
+            name,
+            firstName,
+            lastName,
+            age,
+            gender,
+            address,
+        });
+
+        await newUser.save();
+        res.status(201).json({ message: "Sign-up successful", user: newUser });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
 export const resetPassword = (req: Request, res: Response) => {
     res.send("Reset password route");
 };
