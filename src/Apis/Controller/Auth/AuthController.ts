@@ -1,12 +1,16 @@
-import { Request, Response } from 'express';
-import Joi from 'joi';
-import User from '../../Model/Auth/User';
+import { Request, Response } from "express";
+import Joi from "joi";
+import bcrypt from 'bcrypt';
+import User from "../../Model/Auth/User";
 
 // Joi schema for validating the request body
 const signInSchema = Joi.object({
-    username: Joi.string().allow(null, '').optional(),
-    email: Joi.string().email().allow(null, '').optional(),
-    mobile: Joi.string().pattern(/^\d{10}$/).allow(null, '').optional(),
+    username: Joi.string().allow(null, "").optional(),
+    email: Joi.string().email().allow(null, "").optional(),
+    mobile: Joi.string()
+        .pattern(/^\d{10}$/)
+        .allow(null, "")
+        .optional(),
     password: Joi.string().required(),
 });
 
@@ -20,13 +24,17 @@ export const signIn = async (req: Request, res: Response) => {
     const { username, email, mobile, password } = req.body;
 
     if (!(username || email || mobile)) {
-        return res.status(400).json({ message: 'Username, email, or mobile is required' });
+        return res
+            .status(400)
+            .json({ message: "Username, email, or mobile is required" });
     }
 
     // Check if at least one of the three options is provided
     const optionsCount = [username, email, mobile].filter(Boolean).length;
     if (optionsCount !== 1) {
-        return res.status(400).json({ message: 'Provide only one of username, email, or mobile' });
+        return res
+            .status(400)
+            .json({ message: "Provide only one of username, email, or mobile" });
     }
 
     try {
@@ -40,22 +48,22 @@ export const signIn = async (req: Request, res: Response) => {
         }
 
         if (!user) {
-            return res.status(401).json({ message: 'User not found' });
+            return res.status(401).json({ message: "User not found" });
         }
 
         // Check if the password matches
-        if (user.password !== password) {
-            return res.status(401).json({ message: 'Invalid password' });
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
+            return res.status(401).json({ message: "Invalid password" });
         }
 
         // Sign-in successful
-        res.status(200).json({ message: 'Sign-in successful', user });
+        res.status(200).json({ message: "Sign-in successful", user });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: "Internal server error" });
     }
 };
-
 
 export const signUp = (req: Request, res: Response) => {
     res.send("Sign-up route");
