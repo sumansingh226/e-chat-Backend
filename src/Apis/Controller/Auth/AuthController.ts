@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Joi from "joi";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 import User from "../../Model/Auth/User";
 
 // Joi schema for validating the request body
