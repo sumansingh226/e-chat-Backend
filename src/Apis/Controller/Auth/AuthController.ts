@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Joi from "joi";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from 'dotenv';
 import User from "../../Model/Auth/User";
 
 const signInSchema = Joi.object({
@@ -65,7 +66,7 @@ export const signIn = async (req: Request, res: Response) => {
                 email: user.email,
                 mobile: user.mobile,
             },
-            process.env.JwtSecret,
+            process.env.JwtSecret!,
             { expiresIn: "12h" }
         );
 
