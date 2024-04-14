@@ -65,7 +65,7 @@ export const signIn = async (req: Request, res: Response) => {
                 email: user.email,
                 mobile: user.mobile,
             },
-            "secret",
+            process.env.JwtSecret,
             { expiresIn: "12h" }
         );
 
