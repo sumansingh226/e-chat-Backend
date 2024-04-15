@@ -180,18 +180,14 @@ export const forgotPassword = async (req: Request | any, res: Response) => {
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-
         const token = crypto.randomBytes(20).toString('hex');
-
         user.resetPasswordToken = token;
         user.resetPasswordExpires = Date.now() + 3600000;
         await user.save();
-
         // Send the password reset email
         const transporter = nodemailer.createTransport({
             // Configure your email provider here
         });
-
         const mailOptions = {
             from: 'your@email.com',
             to: user.email,
@@ -201,9 +197,7 @@ export const forgotPassword = async (req: Request | any, res: Response) => {
                 http://${req.headers.host}/reset/${token}\n\n
                 If you did not request this, please ignore this email and your password will remain unchanged.\n`
         };
-
         await transporter.sendMail(mailOptions);
-
         return res.status(200).json({ message: 'Password reset email sent' });
     } catch (error) {
         console.error('Error sending password reset email:', error);
