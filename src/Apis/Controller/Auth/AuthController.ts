@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
 import User from "../../Model/Auth/User";
+import crypto from "crypto"
 
 const signInSchema = Joi.object({
     username: Joi.string().allow(null, "").optional(),
