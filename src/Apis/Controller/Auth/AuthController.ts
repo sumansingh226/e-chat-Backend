@@ -241,7 +241,6 @@ const sendPasswordResetEmail = async (toEmail: string, resetToken: string) => {
 
 export const forgotPassword = async (req: Request | any, res: Response) => {
     const { email } = req.body;
-
     try {
         const user: any = await User.findOne({ email });
         if (!user) {
@@ -251,20 +250,7 @@ export const forgotPassword = async (req: Request | any, res: Response) => {
         user.resetPasswordToken = token;
         user.resetPasswordExpires = Date.now() + 3600000;
         await user.save();
-        // Send the password reset email
-        const transporter = nodemailer.createTransport({
-            // Configure your email provider here
-        });
-        const mailOptions = {
-            from: 'your@email.com',
-            to: user.email,
-            subject: 'Password Reset',
-            text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n
-                Please click on the following link, or paste this into your browser to complete the process:\n\n
-                http://${req.headers.host}/reset/${token}\n\n
-                If you did not request this, please ignore this email and your password will remain unchanged.\n`
-        };
-        await transporter.sendMail(mailOptions);
+        await sendPasswordResetEmail(user.email, token);
         return res.status(200).json({ message: 'Password reset email sent' });
     } catch (error) {
         console.error('Error sending password reset email:', error);
