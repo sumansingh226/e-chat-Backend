@@ -1,0 +1,3 @@
+class stringConstants extends String {
+
+}
