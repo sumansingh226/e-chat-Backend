@@ -1,5 +1,5 @@
 class stringConstants extends String {
-    dateForma = "DD/MM/YYYY";
+    dateFormat = "DD/MM/YYYY";
 }
 
 
