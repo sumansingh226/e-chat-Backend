@@ -4,3 +4,7 @@ import strings from "../Constants/StringsConstants";
 export const DateFormat = (date: Date | null) => {
     return moment(date).isValid() && moment(date).format(strings.dateFormat);
 };
+
+export const getCurrentDate = (format: string) => {
+    return moment().format(strings.dateFormat);
+};
