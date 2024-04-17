@@ -184,7 +184,7 @@ const sendPasswordResetEmail = async (toEmail: string, resetToken: string) => {
     const mailOptions = {
         from: process.env.EMAIL_ID,
         to: toEmail,
-        subject: "Password Reset - E-shop",
+        subject: "Password Reset - E-Chat",
         html: `
         <html>
         <head>
@@ -218,12 +218,12 @@ const sendPasswordResetEmail = async (toEmail: string, resetToken: string) => {
         <body>
             <div class="container">
                 <h2>Hi there!</h2>
-                <p>We received a request to reset your password for E-shop.</p>
+                <p>We received a request to reset your password for E-Chat.</p>
                 <p>Click the following link to reset your password:</p>
                 <a href="${resetLink}">${resetLink}</a>
                 <p>If you did not request a password reset, please ignore this email.</p>
                 <p>Best regards,</p>
-                <p>The E-shop Team</p>
+                <p>The E-Chat Team</p>
             </div>
         </body>
     </html>
