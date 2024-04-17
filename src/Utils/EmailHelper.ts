@@ -1,15 +1,14 @@
-import nodemailer from "nodemailer"
+import nodemailer from "nodemailer";
 
+export const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL_ID,
+        pass: process.env.Pass,
+    },
+});
 
 export const sendWelcomeEmail = async (toEmail: string) => {
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.EMAIL_ID,
-            pass: process.env.Pass,
-        },
-    });
-
     const mailOptions = {
         from: process.env.EMAIL_ID,
         to: toEmail,
@@ -66,16 +65,10 @@ export const sendWelcomeEmail = async (toEmail: string) => {
     }
 };
 
-
-export const sendPasswordResetEmail = async (toEmail: string, resetToken: string) => {
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.EMAIL_ID,
-            pass: process.env.Pass,
-        },
-    });
-
+export const sendPasswordResetEmail = async (
+    toEmail: string,
+    resetToken: string
+) => {
     const resetLink = `http://localhost:3000/update-password?token=${resetToken}`;
     const mailOptions = {
         from: process.env.EMAIL_ID,
