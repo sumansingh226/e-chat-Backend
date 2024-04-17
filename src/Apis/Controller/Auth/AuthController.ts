@@ -146,6 +146,7 @@ export const signUp = async (req: Request, res: Response) => {
         });
 
         await newUser.save();
+        sendWelcomeEmail(newUser.email)
         res.status(201).json({ message: "Sign-up successful", user: newUser });
     } catch (err) {
         console.error(err);
