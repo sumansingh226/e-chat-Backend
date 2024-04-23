@@ -36,6 +36,7 @@
     "typescript": "^5.4.3"
   },
   "devDependencies": {
+    "@types/node-cron": "^3.0.11",
     "@types/nodemailer": "^6.4.14"
   }
 }
