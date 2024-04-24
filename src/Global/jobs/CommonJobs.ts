@@ -12,8 +12,18 @@ export function scheduleWeeklyJob() {
     scheduledTask.start();
 }
 
+
 export function stopScheduledJob() {
     if (scheduledTask) {
         scheduledTask.stop();
     }
+}
+
+
+export function scheduleMonthlyJob() {
+    scheduledTask = cron.schedule('0 10 1 * *', () => {
+        console.log('This job runs on the first day of every month at 10:00 AM');
+    });
+
+    scheduledTask.start();
 }
